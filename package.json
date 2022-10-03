@@ -1,0 +1,26 @@
+{
+  "name": "renewable-energy-node-app",
+  "version": "1.0.0",
+  "description": "This a node backend project for a company operating on iop intergrated with their hardware energy appliances",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ssonko94/Renewable-energy-node-app.git"
+  },
+  "author": "Ssonko Jimmy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ssonko94/Renewable-energy-node-app/issues"
+  },
+  "homepage": "https://github.com/ssonko94/Renewable-energy-node-app#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
