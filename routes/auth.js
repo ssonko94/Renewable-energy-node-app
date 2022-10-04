@@ -8,7 +8,7 @@ const authController = require("../controllers/auth");
 const router = express.Router();
 
 router.post(
-  "/api/signup",
+  "/api/auth/signup",
   [
     body("firstName").trim().isLength({ min: 3 }).not().isEmpty(),
     body("lastName").trim().isLength({ min: 3 }).not().isEmpty(),
@@ -29,6 +29,6 @@ router.post(
   authController.signup
 );
 
-router.post("/api/login", authController.login);
+router.post("/api/auth/login", authController.login);
 
 module.exports = router;

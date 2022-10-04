@@ -7,7 +7,7 @@ const User = require("../models/user");
 exports.signup = async (req, res, next) => {
   try {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
+    if (!errors.isEmpty) {
       return res.status(422).json({
         message: "Validation, failed entered data is incorrect",
         errors: errors.array(),
@@ -47,7 +47,7 @@ exports.login = async (req, res, next) => {
 
     let loadedUser;
 
-    const user = User.findOne({ email: email });
+    const user = await User.findOne({ email: email });
     if (!user) {
       const error = new Error("No user found with this email");
       error.statusCode = 401;
