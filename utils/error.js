@@ -1,16 +1,12 @@
-const express = require("express");
 const { body } = require("express-validator");
 
-const User = require("../models/user");
+const errorLogger = (error, req, res, next) => {
+  console.error("\x1b[31m", err);
+  next(error);
+};
 
-const authController = require("../controllers/auth");
-
-const router = express.Router();
-
-router.post(
-  "/api/auth/signup",
-  [
-    body("firstName").trim().isLength({ min: 3 }).not().isEmpty(),
+const clientSideErrorHandler = (error, req, res, next) => {
+  body("firstName").trim().isLength({ min: 3 }).not().isEmpty(),
     body("lastName").trim().isLength({ min: 3 }).not().isEmpty(),
     body("email")
       .isEmail()
@@ -25,10 +21,12 @@ router.post(
       .normalizeEmail(),
     body("password").trim().isLength({ min: 5 }),
     body("rights").trim().isLength({ min: 3 }).not().isEmpty(),
-  ],
-  authController.signup
-);
+    next();
+};
 
-router.post("/api/auth/login", authController.login);
+const errorResponder = (error, req, res, next) => {
+  res.header("Content-Type", "application/json");
+  res.status(error.statusCode).send(JSON.stringify(error, null, 4));
+};
 
-module.exports = router;
+module.exports = { errorLogger, clientSideErrorHandler, errorResponder };
