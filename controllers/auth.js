@@ -5,39 +5,49 @@ const { validationResult } = require("express-validator");
 const User = require("../models/user");
 
 exports.signup = async (req, res, next) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty) {
-      return res.status(422).json({
-        message: "Validation, failed entered data is incorrect",
-        errors: errors.array(),
-      });
-    }
-
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const email = req.body.email;
-    const password = req.body.password;
-    const rights = req.body.rights;
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const user = new User({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: hashedPassword,
-      rights: rights,
+  const errors = validationResult(req);
+  if (!errors.isEmpty) {
+    return res.status(422).json({
+      message: "Validation, failed entered data is incorrect",
+      errors: errors.array(),
     });
-    const result = await user.save();
-    res.status(201).json({
-      message: "User signed up successfully",
-      userId: result._id.toString(),
-    });
-  } catch (error) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
   }
+
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const email = req.body.email;
+  const password = req.body.password;
+  const rights = req.body.rights;
+  const hashedPassword = bcrypt
+    .hash(password, 12)
+    .then(res)
+    .catch((error) => {
+      error.statusCode = 500;
+      error.message = "Failed to encrypt password";
+      next(error);
+    });
+  const user = User.create({
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    password: hashedPassword,
+    rights: rights,
+  })
+    .then((resData) => {
+      const result = user.save();
+      return result;
+    })
+    .then((data) => {
+      res.status(201).json({
+        message: "User signed up successfully",
+        userId: result._id.toString(),
+      });
+    })
+    .catch((error) => {
+      error.statusCode = 500;
+      error.message = "Failed to create user";
+      next(error);
+    });
 };
 
 exports.login = async (req, res, next) => {
