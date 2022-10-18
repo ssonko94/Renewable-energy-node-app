@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const authRoutes = require("./routes/authRoute");
-const { errorLogger, errorResponder } = require("./utils/error");
+const { errorResponder } = require("./utils/error");
 
 const PORT = 8080;
 const DATABASEURI =
@@ -16,7 +16,6 @@ app.use(cors());
 
 app.use(authRoutes);
 
-app.use(errorLogger);
 app.use(errorResponder);
 
 mongoose
