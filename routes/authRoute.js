@@ -1,14 +1,13 @@
 const express = require("express");
-const { clientSideErrorHandler } = require("../utils/error");
 
-const User = require("../models/user");
+const authController = require("../controllers/authController");
 
-const authController = require("../controllers/auth");
+const { errorWrapper } = require("../utils/error");
 
 const router = express.Router();
 
-router.post("/api/auth/signup", clientSideErrorHandler, authController.signup);
+router.post("/api/auth/signup", errorWrapper(authController.signup));
 
-router.post("/api/auth/login", authController.login);
+router.post("/api/auth/login", errorWrapper(authController.login));
 
 module.exports = router;
