@@ -1,2 +1,4 @@
-exports.validator = (schema) => (payload) =>
+const validator = (schema) => (payload) =>
   schema.validate(payload, { abortEarly: false });
+
+module.exports = validator;
