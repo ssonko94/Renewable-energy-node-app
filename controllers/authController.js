@@ -1,14 +1,12 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { createError } = require("../utils/error");
-const { signUpValidator } = require("../utils/signupSchema");
+const errorWrapper = require("../utils/errorWrapper");
+const AppError = require("../utils/baseError");
+const signUpValidator = require("../utils/signupSchema");
 
 const User = require("../models/user");
 
-exports.signup = async (req, res) => {
-  const value = await signupSchema.validateAsync(req.body);
-  console.log(value);
-
+const signupFunc = async (req, res, next) => {
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const email = req.body.email;
@@ -19,17 +17,11 @@ exports.signup = async (req, res) => {
   const { error } = await signUpValidator(req.body);
 
   if (error) {
-    console.log(error);
+    next(new AppError(error.message, 422));
   }
 
   if (!hashedPassword) {
-    const error = createError({
-      error: "Failed to encrypt password",
-      message: "Failed to encrypt password",
-      code: 500,
-      type: "application error",
-    });
-    throw error;
+    next(new AppError("Failed to encrypt password", 500));
   }
 
   const user = User.create({
@@ -37,29 +29,16 @@ exports.signup = async (req, res) => {
     lastName: lastName,
     email: email,
     password: hashedPassword,
-
     rights: rights,
   });
 
   if (!user) {
-    const error = createError({
-      error: "Failed to create user",
-      message: "Failed to create user",
-      code: 401,
-      type: "database error",
-    });
-    throw error;
+    next(new AppError("Failed to create user", 401));
   }
   const result = await user.save();
 
   if (!result) {
-    const error = createError({
-      error: "Failed to save user",
-      message: "Failed to save user",
-      code: 401,
-      type: "database error",
-    });
-    throw error;
+    next(new AppError("Failed to save user", 401));
   }
 
   res.status(201).json({
@@ -68,7 +47,7 @@ exports.signup = async (req, res) => {
   });
 };
 
-exports.login = async (req, res) => {
+const loginFunc = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -76,24 +55,12 @@ exports.login = async (req, res) => {
 
   const user = await User.findOne({ email: email });
   if (!user) {
-    const error = createError({
-      error: "No user found with this email",
-      message: "No user found with this email",
-      code: 401,
-      type: "database error",
-    });
-    throw error;
+    next(new AppError("No user found with this email", 401));
   }
   loadedUser = user;
   const isEqual = await bcrypt.compare(password, user.password);
   if (!isEqual) {
-    const error = createError({
-      error: "Wrong password provided",
-      message: "Wrong password provided",
-      code: 401,
-      type: "application error",
-    });
-    throw error;
+    next(new AppError("Wrong password provided", 401));
   }
 
   const token = jwt.sign(
@@ -104,3 +71,7 @@ exports.login = async (req, res) => {
 
   res.status(200).json({ token: token, userId: loadedUser._id.toString() });
 };
+
+exports.signup = errorWrapper(signupFunc);
+
+exports.login = errorWrapper(loginFunc);
