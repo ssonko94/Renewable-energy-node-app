@@ -21,7 +21,16 @@ const userSchema = new Schema({
   },
   rights: {
     type: String,
-    reuired: true,
+    required: true,
+  },
+  confirmationCode: {
+    type: String,
+    unique: true,
+  },
+  status: {
+    type: String,
+    enum: ["Pending", "Active"],
+    default: "Pending",
   },
 });
 

@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -6,9 +7,8 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoute");
 const errorResponder = require("./utils/error");
 
-const PORT = 8080;
-const DATABASEURI =
-  "mongodb+srv://MubiruIsaac:YJ9VPGQFRy2qEb5i@renewableenergy.tur0voc.mongodb.net/renewableEnergy?retryWrites=true&w=majority";
+const PORT = process.env.PORT || 8080;
+const DATABASEURI = process.env.DATABASE_URL;
 
 const app = express();
 app.use(bodyParser.json());
