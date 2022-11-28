@@ -8,4 +8,6 @@ router.post("/api/auth/signup", authController.signup);
 
 router.post("/api/auth/login", authController.login);
 
+router.get("/api/auth/confirm/:confirmationCode", authController.confirmUser);
+
 module.exports = router;
