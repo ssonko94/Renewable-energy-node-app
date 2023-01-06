@@ -47,7 +47,7 @@ const signupFunc = async (req, res, next) => {
   }
 
   res.status(201).json({
-    message: "User signed up successfully",
+    message: "Confirm from your email to signup successfully",
     userId: result._id.toString(),
   });
 
