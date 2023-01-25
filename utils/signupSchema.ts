@@ -16,4 +16,4 @@ const schema = Joi.object({
 
 const signUpValidator = validate(schema);
 
-module.exports = signUpValidator;
+export default signUpValidator;

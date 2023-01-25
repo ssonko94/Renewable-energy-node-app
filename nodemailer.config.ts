@@ -12,7 +12,7 @@ const transport = nodemailer.createTransport({
   },
 });
 
-module.exports.sendConfirmationEmail = (name, email, confirmationCode) => {
+const sendConfirmationEmail = (name, email, confirmationCode) => {
   console.log("Check");
   transport
     .sendMail({
@@ -27,3 +27,5 @@ module.exports.sendConfirmationEmail = (name, email, confirmationCode) => {
     })
     .catch((err) => console.log(err));
 };
+
+export { sendConfirmationEmail };

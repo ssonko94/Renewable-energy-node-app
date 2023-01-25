@@ -6,4 +6,4 @@ const errorWrapper = (func) => async (req, res, next) => {
   }
 };
 
-module.exports = errorWrapper;
+export default errorWrapper;

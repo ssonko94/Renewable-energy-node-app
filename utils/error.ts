@@ -11,7 +11,7 @@ const errorResponder = (error, req, res, next) => {
     error.statusCode = 500;
   }
   if (error.code === 11000) {
-    err = handleValidationErrors(error);
+    const err = handleValidationErrors(error);
     res
       .status(err.statusCode)
       .send(JSON.stringify({ message: err.message, code: err.statusCode }));

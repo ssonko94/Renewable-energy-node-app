@@ -1,14 +1,15 @@
 require("dotenv").config();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const errorWrapper = require("../utils/errorWrapper");
-const AppError = require("../utils/baseError");
-const signUpValidator = require("../utils/signupSchema");
-const { sendConfirmationEmail } = require("../nodemailer.config");
+import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
+import errorWrapper from "../utils/errorWrapper";
+import AppError from "../utils/baseError";
+import signUpValidator from "../utils/signupSchema";
+import { sendConfirmationEmail } from "../nodemailer.config";
+import bcrypt from "bcrypt";
 
 const User = require("../models/user");
 
-const signupFunc = async (req, res, next) => {
+const signupFunc = async (req: Request, res: Response, next: NextFunction) => {
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const email = req.body.email;
@@ -26,7 +27,7 @@ const signupFunc = async (req, res, next) => {
     return next(new AppError("Failed to encrypt password", 500));
   }
 
-  const token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET);
+  const token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET!);
 
   const user = await User.create({
     firstName: firstName,
@@ -54,7 +55,7 @@ const signupFunc = async (req, res, next) => {
   sendConfirmationEmail(user.firstName, user.email, user.confirmationCode);
 };
 
-const loginFunc = async (req, res, next) => {
+const loginFunc = async (req: Request, res: Response, next: NextFunction) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -66,7 +67,7 @@ const loginFunc = async (req, res, next) => {
   }
   loadedUser = user;
   if (user.status !== "Active") {
-    return next(new Error("Pending Account. Please Verify Your Email!", 401));
+    return next(new Error("Pending Account. Please Verify Your Email!"));
   }
   const isEqual = await bcrypt.compare(password, user.password);
   if (!isEqual) {
@@ -75,7 +76,7 @@ const loginFunc = async (req, res, next) => {
 
   const token = jwt.sign(
     { userId: loadedUser._id.toString() },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET!,
     { expiresIn: "1hr" }
   );
 
@@ -86,7 +87,11 @@ const loginFunc = async (req, res, next) => {
   });
 };
 
-const confirmUserFunc = async (req, res, next) => {
+const confirmUserFunc = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const user = await User.findOne({
     confirmationCode: req.params.confirmationCode,
   });
