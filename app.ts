@@ -20,11 +20,11 @@ app.use(errorResponder);
 
 mongoose
   .connect(DATABASEURI)
-  .then((result) => {
+  .then(() => {
     app.listen(PORT);
     console.log("connected successfully!");
   })
-  .catch((error) => {
+  .catch((error: any) => {
     console.log(error);
   });
 

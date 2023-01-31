@@ -1,13 +1,12 @@
 require("dotenv").config();
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import bcrypt from "bcryptjs";
 import errorWrapper from "../utils/errorWrapper";
 import AppError from "../utils/baseError";
 import signUpValidator from "../utils/signupSchema";
 import { sendConfirmationEmail } from "../nodemailer.config";
-import bcrypt from "bcrypt";
-
-const User = require("../models/user");
+import { User } from "../models/user";
 
 const signupFunc = async (req: Request, res: Response, next: NextFunction) => {
   const firstName = req.body.firstName;

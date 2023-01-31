@@ -3,7 +3,7 @@ class AppError extends Error {
   status;
   isOperational;
 
-  constructor(message, statusCode) {
+  constructor(message: string, statusCode: number) {
     super(message);
 
     this.statusCode = statusCode;
