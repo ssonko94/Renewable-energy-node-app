@@ -24,7 +24,7 @@ mongoose
     app.listen(PORT);
     console.log("connected successfully!");
   })
-  .catch((error: any) => {
+  .catch((error: Error) => {
     console.log(error);
   });
 

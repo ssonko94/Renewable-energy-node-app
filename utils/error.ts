@@ -6,7 +6,7 @@ interface Error {
   message: string;
 }
 
-const handleValidationErrors = (error: Error) => {
+const handleValidationErrors = (error: Error): Error => {
   error.statusCode = 422;
   error.message = `Validation failed due to ${error.message}`;
   return error;
@@ -17,7 +17,7 @@ const errorResponder = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   console.error(error);
   res.header("Content-Type", "application/json");
   if (!error.statusCode) {
