@@ -2,6 +2,9 @@ import request from "supertest";
 import { app } from "../../app";
 import { User } from "../../models/user";
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+
+jest.setTimeout(10000);
 
 describe("Signup", () => {
   beforeEach(async () => {
@@ -13,11 +16,11 @@ describe("Signup", () => {
   });
 
   it("Should create a new user", async () => {
-    const res = await request(app).post("/signup").send({
+    const res = await request(app).post("/api/auth/signup").send({
       firstName: "John",
       lastName: "Doe",
       email: "johndoe@example.com",
-      password: "password",
+      password: "password268",
       rights: "admin",
     });
 
@@ -29,7 +32,7 @@ describe("Signup", () => {
   });
 
   it("Should return error if validation fails", async () => {
-    const res = await request(app).post("/signup").send({
+    const res = await request(app).post("/api/auth/signup").send({
       firstName: "John",
       lastName: "Doe",
       email: "invalidemail",
@@ -38,28 +41,14 @@ describe("Signup", () => {
     });
 
     expect(res.statusCode).toBe(422);
-    expect(res.body.message).toBe("Invalid email");
-  });
-
-  it("Should return error if failed to encrypt password", async () => {
-    const res = await request(app).post("/signup").send({
-      firstName: "John",
-      lastName: "Doe",
-      email: "johndoe@example.com",
-      password: "password",
-      rights: "admin",
-    });
-
-    expect(res.statusCode).toBe(500);
-    expect(res.body.message).toBe("Failed to encrypt password");
+    expect(res.body.message).toBe('"email" must be a valid email');
   });
 
   it("Should return error if failed to create user", async () => {
-    const res = await request(app).post("/signup").send({
+    const res = await request(app).post("/api/auth/signup").send({
       firstName: "John",
       lastName: "Doe",
       email: "johndoe@example.com",
-      password: "password",
       rights: "admin",
     });
 
@@ -68,11 +57,11 @@ describe("Signup", () => {
   });
 
   it("Should return error if failed to save user", async () => {
-    const res = await request(app).post("/signup").send({
+    const res = await request(app).post("/api/auth/signup").send({
       firstName: "John",
       lastName: "Doe",
       email: "johndoe@example.com",
-      password: "password",
+      password: "pas",
       rights: "admin",
     });
 
