@@ -104,7 +104,7 @@ const confirmUserFunc = async (
   const result = await user.save();
 
   if (!result) {
-    return next(new AppError(result.message, 401));
+    return next(new AppError("Failed to save this user", 401));
   } else {
     return res
       .status(200)

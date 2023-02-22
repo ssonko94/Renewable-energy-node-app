@@ -1,23 +1,23 @@
 import mongoose, { Schema, Document, Date } from "mongoose";
 
 export interface DeviceDocument extends Document {
-  device_name: string;
-  device_type: string;
-  device_imei: string;
+  deviceName: string;
+  deviceType: string;
+  deviceImei: string;
   location: string;
   owner: string;
   status: string;
-  logging_status: string;
+  loggingStatus: string;
   createdAt: Date;
 }
 
 const DeviceSchema: Schema = new Schema({
-  device_name: { type: String, required: [true, "Device must have a name"] },
-  device_type: {
+  deviceName: { type: String, required: [true, "Device must have a name"] },
+  deviceType: {
     type: String,
     required: [true, "Device type must be defined"],
   },
-  device_imei: { type: mongoose.Types.ObjectId },
+  deviceImei: { type: mongoose.Types.ObjectId },
   location: { type: String, required: [true, "Device must have a location"] },
   data: { type: Map, of: String },
   owner: {
@@ -30,7 +30,7 @@ const DeviceSchema: Schema = new Schema({
     enum: ["active", "deactive", "offline", "online", "deleted"],
     default: "active",
   },
-  logging_status: {
+  loggingStatus: {
     type: String,
     enum: ["offline", "online"],
     default: "offline",
