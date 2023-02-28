@@ -4,10 +4,10 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.post("/api/auth/signup", authController.signup);
+router.post("/signup", authController.signup);
 
-router.post("/api/auth/login", authController.login);
+router.post("/login", authController.login);
 
-router.get("/api/auth/confirm/:confirmationCode", authController.confirmUser);
+router.get("/confirm/:confirmationCode", authController.confirmUser);
 
 module.exports = router;
